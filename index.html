@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>AlphaHunter Lite</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #111827;
+      --card2: #172033;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #facc15;
+      --blue: #38bdf8;
+      --border: rgba(255,255,255,.12);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); padding-bottom: 82px; }
+    header { padding: 18px 16px 10px; position: sticky; top: 0; background: rgba(11,17,32,.92); backdrop-filter: blur(10px); z-index: 5; border-bottom: 1px solid var(--border); }
+    h1 { margin:0; font-size: 24px; letter-spacing: .2px; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .scoreRow { display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:14px 16px 4px; }
+    .stat { background: linear-gradient(180deg, #172033, #101827); border: 1px solid var(--border); border-radius: 16px; padding:12px; }
+    .stat .label { color: var(--muted); font-size: 12px; }
+    .stat .value { font-size: 24px; font-weight: 800; margin-top:4px; }
+    main { padding: 10px 16px; }
+    .tabs { display:flex; gap:8px; overflow-x:auto; padding: 8px 16px 6px; }
+    .tab { border:1px solid var(--border); color:var(--text); background:#111827; border-radius:999px; padding:8px 12px; white-space:nowrap; font-size:13px; }
+    .tab.active { background: var(--blue); color:#06101a; font-weight:700; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding:14px; margin: 12px 0; box-shadow: 0 10px 24px rgba(0,0,0,.22); }
+    .topline { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .ticker { font-size:21px; font-weight:900; }
+    .company { color: var(--muted); font-size: 12px; margin-top:2px; }
+    .pill { border-radius:999px; padding:6px 9px; font-size:12px; font-weight:800; }
+    .bull { background: rgba(34,197,94,.15); color:#86efac; border:1px solid rgba(34,197,94,.35); }
+    .bear { background: rgba(239,68,68,.15); color:#fca5a5; border:1px solid rgba(239,68,68,.35); }
+    .watch { background: rgba(250,204,21,.13); color:#fde68a; border:1px solid rgba(250,204,21,.35); }
+    .score { font-size: 42px; font-weight: 900; line-height:1; margin-top:12px; }
+    .score small { font-size:13px; color:var(--muted); font-weight:500; }
+    .reason { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+    .tag { background: var(--card2); border:1px solid var(--border); color:#d1d5db; border-radius:999px; padding:6px 8px; font-size:12px; }
+    .plan { display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:12px; }
+    .box { background:#0b1220; border:1px solid var(--border); border-radius:13px; padding:10px; }
+    .box .k { color:var(--muted); font-size:11px; }
+    .box .v { margin-top:3px; font-weight:800; }
+    .note { color:var(--muted); font-size:12px; margin-top:11px; line-height:1.35; }
+    .btnrow { display:flex; gap:8px; margin-top:12px; }
+    button { background:#1f2937; color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 11px; font-weight:700; flex:1; }
+    button.primary { background:var(--blue); color:#07131f; }
+    nav { position:fixed; bottom:0; left:0; right:0; display:grid; grid-template-columns: repeat(4, 1fr); background:rgba(15,23,42,.96); border-top:1px solid var(--border); padding:8px 6px 20px; backdrop-filter: blur(10px); }
+    nav button { border:0; background:transparent; color:var(--muted); font-size:11px; padding:6px 2px; }
+    nav button.active { color:var(--blue); }
+    .hidden { display:none; }
+    input, textarea, select { width:100%; background:#0b1220; border:1px solid var(--border); border-radius:12px; color:var(--text); padding:12px; font-size:16px; margin-top:8px; }
+    label { display:block; color:var(--muted); font-size:12px; margin-top:12px; }
+    .empty { text-align:center; color:var(--muted); padding:28px 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AlphaHunter Lite</h1>
+    <div class="sub">SEC filing scanner + trade-plan dashboard</div>
+  </header>
+
+  <section class="scoreRow">
+    <div class="stat"><div class="label">Top score</div><div class="value" id="topScore">94</div></div>
+    <div class="stat"><div class="label">New alerts</div><div class="value" id="alertCount">3</div></div>
+  </section>
+
+  <div class="tabs" id="filters">
+    <button class="tab active" onclick="setFilter('all', this)">All</button>
+    <button class="tab" onclick="setFilter('bullish', this)">Bullish</button>
+    <button class="tab" onclick="setFilter('bearish', this)">Bearish</button>
+    <button class="tab" onclick="setFilter('watch', this)">Watch</button>
+  </div>
+
+  <main>
+    <section id="feed"></section>
+    <section id="watchlist" class="hidden">
+      <div class="card">
+        <div class="ticker">Watchlist</div>
+        <label>Add ticker</label>
+        <input id="tickerInput" placeholder="Example: GME" maxlength="8" />
+        <button class="primary" style="margin-top:10px" onclick="addTicker()">Add to Watchlist</button>
+        <div id="watchItems" class="reason"></div>
+      </div>
+    </section>
+    <section id="journal" class="hidden">
+      <div class="card">
+        <div class="ticker">Trade Journal</div>
+        <label>Ticker</label><input id="jTicker" placeholder="GME" />
+        <label>Plan / Notes</label><textarea id="jNotes" rows="5" placeholder="Why the trade, entry, stop, targets..."></textarea>
+        <button class="primary" style="margin-top:10px" onclick="saveJournal()">Save Note</button>
+        <div id="journalItems"></div>
+      </div>
+    </section>
+    <section id="settings" class="hidden">
+      <div class="card">
+        <div class="ticker">Settings</div>
+        <div class="note">Version 1 is a front-end prototype. Next step is connecting the SEC backend scanner and Discord alerts.</div>
+        <label>Discord webhook URL</label><input id="discordWebhook" placeholder="Paste later when backend is added" />
+        <label>Minimum alert score</label><input id="minScore" type="number" value="85" />
+        <button class="primary" style="margin-top:10px" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </section>
+  </main>
+
+  <nav>
+    <button class="active" onclick="showPage('feed', this)">Feed</button>
+    <button onclick="showPage('watchlist', this)">Watchlist</button>
+    <button onclick="showPage('journal', this)">Journal</button>
+    <button onclick="showPage('settings', this)">Settings</button>
+  </nav>
+
+<script>
+const sampleAlerts = [
+  {ticker:'GME', company:'GameStop Corp.', type:'bullish', score:94, filing:'13D / ownership change', tags:['Activist-style filing','Position increase','High retail attention','Options liquid'], entry:'Break above prior high', stop:'Below swing low', target:'T1 resistance / T2 measured move', note:'High-conviction review candidate. Requires chart confirmation and options liquidity check before entry.'},
+  {ticker:'XYZ', company:'Example Biotech', type:'bullish', score:89, filing:'Form 4', tags:['CEO open-market buy','Cluster buying','After 35% decline','Small float'], entry:'Above day high', stop:'ATR stop', target:'Prior gap area', note:'Insider buying looks meaningful, but biotech risk is high. Avoid oversized options exposure.'},
+  {ticker:'ABC', company:'Example Industrial', type:'watch', score:81, filing:'8-K', tags:['Strategic review','New CFO','Volume rising'], entry:'Wait for breakout', stop:'Invalidation under base', target:'200-day MA', note:'Interesting, but not enough confirmation yet.'},
+  {ticker:'DILU', company:'Example Growth Co.', type:'bearish', score:22, filing:'S-3 shelf', tags:['Potential dilution','ATM risk','Weak trend'], entry:'Avoid longs', stop:'N/A', target:'Watch lower support', note:'Possible capital raise risk. Better as an avoid/short-watch than long idea.'}
+];
+let currentFilter = 'all';
+function renderFeed(){
+  const feed = document.getElementById('feed');
+  const data = sampleAlerts.filter(a => currentFilter === 'all' || a.type === currentFilter);
+  feed.innerHTML = data.map(a => `
+    <div class="card">
+      <div class="topline"><div><div class="ticker">${a.ticker}</div><div class="company">${a.company} • ${a.filing}</div></div><div class="pill ${a.type==='bullish'?'bull':a.type==='bearish'?'bear':'watch'}">${a.type.toUpperCase()}</div></div>
+      <div class="score">${a.score}<small>/100</small></div>
+      <div class="reason">${a.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="plan"><div class="box"><div class="k">Entry idea</div><div class="v">${a.entry}</div></div><div class="box"><div class="k">Stop</div><div class="v">${a.stop}</div></div><div class="box"><div class="k">Target</div><div class="v">${a.target}</div></div><div class="box"><div class="k">Action</div><div class="v">Review</div></div></div>
+      <div class="note">${a.note}</div>
+      <div class="btnrow"><button onclick="addWatch('${a.ticker}')">Track</button><button onclick="prefillJournal('${a.ticker}', '${a.note.replace(/'/g, "")}')">Journal</button><button class="primary">Open Plan</button></div>
+    </div>`).join('') || '<div class="empty">No alerts for this filter.</div>';
+}
+function setFilter(f, el){ currentFilter=f; document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderFeed(); }
+function showPage(id, el){ ['feed','watchlist','journal','settings'].forEach(p=>document.getElementById(p).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.getElementById('filters').style.display = id==='feed' ? 'flex':'none'; document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); el.classList.add('active'); if(id==='watchlist') renderWatch(); if(id==='journal') renderJournal(); }
+function getList(k){ return JSON.parse(localStorage.getItem(k)||'[]'); }
+function setList(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+function addWatch(t){ const list=getList('watch'); if(!list.includes(t)) list.push(t); setList('watch', list); renderWatch(); alert(t+' added to watchlist'); }
+function addTicker(){ const t=document.getElementById('tickerInput').value.trim().toUpperCase(); if(t) addWatch(t); document.getElementById('tickerInput').value=''; }
+function renderWatch(){ const list=getList('watch'); document.getElementById('watchItems').innerHTML = list.map(t=>`<span class="tag">${t} <b onclick="removeWatch('${t}')">×</b></span>`).join('') || '<div class="empty">No tickers yet.</div>'; }
+function removeWatch(t){ setList('watch', getList('watch').filter(x=>x!==t)); renderWatch(); }
+function prefillJournal(t, n){ document.getElementById('jTicker').value=t; document.getElementById('jNotes').value=n; document.querySelectorAll('nav button')[2].click(); }
+function saveJournal(){ const item={ticker:document.getElementById('jTicker').value.toUpperCase(), notes:document.getElementById('jNotes').value, date:new Date().toLocaleString()}; if(!item.ticker && !item.notes) return; const list=getList('journal'); list.unshift(item); setList('journal', list); document.getElementById('jTicker').value=''; document.getElementById('jNotes').value=''; renderJournal(); }
+function renderJournal(){ const list=getList('journal'); document.getElementById('journalItems').innerHTML = list.map(j=>`<div class="box" style="margin-top:10px"><div class="k">${j.date}</div><div class="v">${j.ticker}</div><div class="note">${j.notes}</div></div>`).join('') || '<div class="empty">No notes saved yet.</div>'; }
+function saveSettings(){ localStorage.setItem('discordWebhook', document.getElementById('discordWebhook').value); localStorage.setItem('minScore', document.getElementById('minScore').value); alert('Settings saved'); }
+renderFeed(); renderWatch(); renderJournal();
+</script>
+</body>
+</html>
