@@ -327,6 +327,62 @@
       margin-top: 8px;
     }
 
+
+    .cardSummaryButton {
+      width: 100%;
+      margin-top: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: #dbeafe;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.28);
+    }
+
+    .cardSummaryButton:hover {
+      background: rgba(37, 99, 235, 0.2);
+    }
+
+    .expandIcon {
+      display: inline-block;
+      font-size: 15px;
+      transition: transform 0.25s ease;
+    }
+
+    .opportunityCard.expanded .expandIcon {
+      transform: rotate(180deg);
+    }
+
+    .opportunityDetails {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.3s ease,
+        opacity 0.25s ease;
+    }
+
+    .opportunityDetailsInner {
+      overflow: hidden;
+    }
+
+    .opportunityCard.expanded .opportunityDetails {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .collapsedSummary {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .opportunityCard.expanded .collapsedSummary {
+      display: none;
+    }
+
     .sectionTitle {
       margin-top: 17px;
       margin-bottom: 7px;
@@ -1444,7 +1500,10 @@
         );
 
       return `
-        <div class="card">
+        <div
+          class="card opportunityCard"
+          id="opportunity-${chartSymbol}"
+        >
           <div class="top">
             <div>
               <div class="ticker">
@@ -1565,60 +1624,117 @@
             </div>
           </div>
 
-          <div class="targetGrid">
-            ${targetsHtml}
+          <div class="collapsedSummary">
+            Tap below to view targets, insider details, reasons, warnings and actions.
           </div>
 
-          <div class="insiderBox">
-            <strong>
-              Insider Activity
-            </strong>
+          <button
+            class="cardSummaryButton"
+            onclick="toggleOpportunityDetails('${chartSymbol}', this)"
+            aria-expanded="false"
+          >
+            <span>View Details</span>
+            <span class="expandIcon">⌄</span>
+          </button>
 
-            <div class="small">
-              ${
-                opportunity.insiderActivity
-                  ?.purchaseCount || 0
-              }
-              purchase(s) totaling approximately
-              ${formatCompactCurrency(
-                opportunity.insiderActivity
-                  ?.totalPurchaseValue
-              )}.
+          <div class="opportunityDetails">
+            <div class="opportunityDetailsInner">
+              <div class="sectionTitle">
+                Profit Targets
+              </div>
+
+              <div class="targetGrid">
+                ${targetsHtml}
+              </div>
+
+              <div class="insiderBox">
+                <strong>
+                  Insider Activity
+                </strong>
+
+                <div class="small">
+                  ${
+                    opportunity.insiderActivity
+                      ?.purchaseCount || 0
+                  }
+                  purchase(s) totaling approximately
+                  ${formatCompactCurrency(
+                    opportunity.insiderActivity
+                      ?.totalPurchaseValue
+                  )}.
+                </div>
+
+                <div class="small">
+                  Reported owner:
+                  ${escapeHtml(ownerText)}
+                </div>
+              </div>
+
+              ${reasonsHtml}
+              ${warningsHtml}
+
+              <div class="btnRow">
+                <button
+                  onclick="addWatch('${ticker}')"
+                >
+                  Add Watch
+                </button>
+
+                <button
+                  onclick="quickNote('${ticker}')"
+                >
+                  Journal
+                </button>
+
+                <a
+                  class="btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://www.tradingview.com/chart/?symbol=${chartSymbol}"
+                >
+                  Chart
+                </a>
+              </div>
             </div>
-
-            <div class="small">
-              Reported owner:
-              ${escapeHtml(ownerText)}
-            </div>
-          </div>
-
-          ${reasonsHtml}
-          ${warningsHtml}
-
-          <div class="btnRow">
-            <button
-              onclick="addWatch('${ticker}')"
-            >
-              Add Watch
-            </button>
-
-            <button
-              onclick="quickNote('${ticker}')"
-            >
-              Journal
-            </button>
-
-            <a
-              class="btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.tradingview.com/chart/?symbol=${chartSymbol}"
-            >
-              Chart
-            </a>
           </div>
         </div>
       `;
+    }
+
+    function toggleOpportunityDetails(
+      symbol,
+      button
+    ) {
+      const card =
+        document.getElementById(
+          `opportunity-${symbol}`
+        );
+
+      if (!card) {
+        return;
+      }
+
+      const isExpanded =
+        card.classList.toggle(
+          "expanded"
+        );
+
+      button.setAttribute(
+        "aria-expanded",
+        String(isExpanded)
+      );
+
+      const label =
+        button.querySelector(
+          "span:first-child"
+        );
+
+      if (label) {
+        label.textContent =
+          isExpanded
+            ? "Hide Details"
+            : "View Details";
+      }
     }
 
     function updateStats() {
