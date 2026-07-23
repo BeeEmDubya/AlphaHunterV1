@@ -237,6 +237,331 @@
       border: 1px solid rgba(56, 189, 248, 0.3);
     }
 
+
+    .analystPanel {
+      position: relative;
+      margin-top: 15px;
+      padding: 14px;
+      overflow: hidden;
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(37, 99, 235, 0.14),
+          rgba(15, 23, 42, 0.72)
+        );
+      border: 1px solid rgba(96, 165, 250, 0.25);
+    }
+
+    .analystPanel::before {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      top: -95px;
+      right: -65px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.13);
+      filter: blur(5px);
+      pointer-events: none;
+    }
+
+    .analystPanel.analystBuy {
+      border-color: rgba(34, 197, 94, 0.35);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(22, 101, 52, 0.2),
+          rgba(15, 23, 42, 0.76)
+        );
+    }
+
+    .analystPanel.analystWait {
+      border-color: rgba(245, 158, 11, 0.32);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(146, 64, 14, 0.16),
+          rgba(15, 23, 42, 0.76)
+        );
+    }
+
+    .analystPanel.analystPass {
+      border-color: rgba(239, 68, 68, 0.32);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(127, 29, 29, 0.17),
+          rgba(15, 23, 42, 0.76)
+        );
+    }
+
+    .analystHeader {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .analystEyebrow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #bfdbfe;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .analystRobot {
+      display: inline-grid;
+      width: 23px;
+      height: 23px;
+      place-items: center;
+      border-radius: 8px;
+      color: #e0f2fe;
+      background: rgba(37, 99, 235, 0.28);
+      border: 1px solid rgba(96, 165, 250, 0.32);
+    }
+
+    .analystQuestion {
+      margin-top: 7px;
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: -0.25px;
+    }
+
+    .analystAction {
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+    }
+
+    .analystBuy .analystAction {
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .analystWait .analystAction {
+      color: #fcd34d;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .analystPass .analystAction {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .confidenceBlock {
+      position: relative;
+      z-index: 1;
+      margin-top: 15px;
+    }
+
+    .confidenceTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .confidenceTop strong {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .confidenceTrack {
+      height: 8px;
+      margin-top: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .confidenceFill {
+      height: 100%;
+      min-width: 3px;
+      border-radius: inherit;
+      transition: width 0.5s ease;
+    }
+
+    .confidenceHigh {
+      background: linear-gradient(
+        90deg,
+        #16a34a,
+        #4ade80
+      );
+    }
+
+    .confidenceMedium {
+      background: linear-gradient(
+        90deg,
+        #d97706,
+        #fbbf24
+      );
+    }
+
+    .confidenceLow {
+      background: linear-gradient(
+        90deg,
+        #dc2626,
+        #fb7185
+      );
+    }
+
+    .analystSummary {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(2, 6, 23, 0.32);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .analystLabel {
+      color: #dbeafe;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .analystSummary p {
+      margin: 7px 0 0;
+      color: #dbe5f5;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .analystTakeaway {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 4px;
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .analystTakeaway span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .analystTakeaway strong {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .analystDebate {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .debateColumn {
+      padding: 11px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.065);
+    }
+
+    .debateColumn.bullCase {
+      border-color: rgba(34, 197, 94, 0.18);
+    }
+
+    .debateColumn.bearCase {
+      border-color: rgba(239, 68, 68, 0.18);
+    }
+
+    .debateTitle {
+      margin-bottom: 7px;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .bullCase .debateTitle {
+      color: #86efac;
+    }
+
+    .bearCase .debateTitle {
+      color: #fca5a5;
+    }
+
+    .debateColumn ul {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .debateColumn li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 7px;
+      color: #dbe5f5;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .signalIcon {
+      display: inline-grid;
+      width: 17px;
+      height: 17px;
+      place-items: center;
+      margin-top: 1px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .signalIcon.positive {
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.14);
+    }
+
+    .signalIcon.negative {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.14);
+    }
+
+    .signalIcon.neutralSignal {
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.14);
+    }
+
+    .analystDisclaimer {
+      position: relative;
+      z-index: 1;
+      margin-top: 10px;
+      color: #7f8ba0;
+      font-size: 9px;
+      line-height: 1.35;
+    }
+
     .scoreLine {
       display: flex;
       align-items: flex-end;
@@ -654,5 +979,9 @@
 
       .tradeGrid {
         grid-template-columns: repeat(4, 1fr);
+      }
+
+      .analystDebate {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }

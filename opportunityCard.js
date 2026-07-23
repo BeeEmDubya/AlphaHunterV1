@@ -7,6 +7,11 @@ import {
   getRiskClass
 } from "./helpers.js";
 
+import {
+  buildAnalystSummary,
+  renderAnalystPanel
+} from "./aiAnalyst.js";
+
 export function renderOpportunityCard(opportunity) {
   const ticker =
     escapeHtml(
@@ -165,6 +170,12 @@ export function renderOpportunityCard(opportunity) {
       opportunity.ticker || ""
     );
 
+  const analyst =
+    buildAnalystSummary(opportunity);
+
+  const analystPanelHtml =
+    renderAnalystPanel(analyst);
+
   return `
     <div
       class="card opportunityCard"
@@ -185,6 +196,8 @@ export function renderOpportunityCard(opportunity) {
           ${recommendation}
         </span>
       </div>
+
+      ${analystPanelHtml}
 
       <div class="scoreLine">
         <div class="score">
